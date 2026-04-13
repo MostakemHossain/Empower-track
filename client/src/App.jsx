@@ -20,17 +20,21 @@ const App = () => {
         <Route path="/login" element={<LoginLanding />} />
         <Route
           path="/login/admin"
-          role="admin"
-          title="Admin Portal"
-          subTitle="Sign in to manage the organization"
-          element={<LoginForm />}
+          element={
+            <LoginForm
+              role="admin"
+              subTitle="Sign in to manage the organization"
+            />
+          }
         />
         <Route
           path="/login/employee"
-          role="employee"
-          title="Employee Portal"
-          subTitle="Sign in to access your"
-          element={<LoginForm />}
+          element={
+            <LoginForm
+              role="employee"
+              subTitle="Sign in to access your portal"
+            />
+          }
         />
 
         <Route element={<Layout />}>
