@@ -1,7 +1,12 @@
-const Dashboard = () => {
-  return (
-    <div>Dashboard</div>
-  )
-}
+import AdminDashboard from "./AdminDashboard";
+import EmployeeDashboard from "./EmployeeDashboard";
 
-export default Dashboard
+const Dashboard = () => {
+  const role = "e"; 
+
+  return role === "admin"
+    ? <AdminDashboard />
+    : <EmployeeDashboard />;
+};
+
+export default Dashboard;
