@@ -164,6 +164,8 @@ const Attendance = () => {
         <table className="w-full min-w-[900px]">
           <thead className="bg-slate-100 text-xs uppercase text-slate-500">
             <tr>
+              
+              <th className="text-left px-8 py-5">#</th>
               <th className="text-left px-8 py-5">Date</th>
               <th className="text-left px-8 py-5">Check In</th>
               <th className="text-left px-8 py-5">Check Out</th>
@@ -174,7 +176,7 @@ const Attendance = () => {
           </thead>
 
           <tbody className="divide-y divide-slate-100">
-            {attendanceRecords.map((record) => {
+            {attendanceRecords.map((record,index) => {
               const dayType = getDayTypeDisplay(record);
               const isLive = !record.checkOut;
 
@@ -183,6 +185,9 @@ const Attendance = () => {
                   key={record._id}
                   className="hover:bg-indigo-50/40 transition"
                 >
+                   <td className="px-8 py-5 font-bold text-slate-700">
+                    {index + 1}
+                  </td>
                   <td className="px-8 py-5 font-bold text-slate-800">
                     {new Date(record.date).toDateString()}
                     {isLive && (
