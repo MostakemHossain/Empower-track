@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 
+/* ================= REUSABLE INPUT COMPONENT ================= */
 const DetailField = ({ label, name, type = "text", value, onChange, disabled, placeholder, error, helpText }) => {
   return (
     <div className="w-full">

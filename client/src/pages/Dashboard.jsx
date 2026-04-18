@@ -2,7 +2,7 @@ import AdminDashboard from "./AdminDashboard";
 import EmployeeDashboard from "./EmployeeDashboard";
 
 const Dashboard = () => {
-  const role = "admin"; 
+  const role = "e"; 
 
   return role === "admin"
     ? <AdminDashboard />
