@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { dummyPayslipData, dummyEmployeeData } from "../assets/assets";
-import { FileText, Download, Plus } from "lucide-react";
+import {  Download, Plus } from "lucide-react";
 
 const PaySlips = () => {
   const role = "admin"; // "employee"
@@ -25,7 +25,7 @@ const PaySlips = () => {
 
   const years = Array.from(
     { length: 5 },
-    (_, i) => new Date().getFullYear() + i
+    (_, i) => new Date().getFullYear() - i
   );
 
   // FILTER
@@ -141,7 +141,7 @@ const PaySlips = () => {
       </div>
 
       {/* TABLE */}
-      <div className="overflow-x-auto bg-white rounded-3xl shadow border">
+      <div className="overflow-x-auto bg-white rounded-3xl shadow ">
 
         <table className="w-full min-w-[900px]">
 
@@ -188,9 +188,7 @@ const PaySlips = () => {
                 </td>
 
                 <td className="px-8 py-5 text-right space-x-2">
-                  <button className="p-2 bg-indigo-100 text-indigo-600 rounded-xl">
-                    <FileText size={18} />
-                  </button>
+                  
 
                   <button className="p-2 bg-emerald-100 text-emerald-600 rounded-xl">
                     <Download size={18} />
