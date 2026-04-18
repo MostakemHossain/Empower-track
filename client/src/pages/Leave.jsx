@@ -14,7 +14,7 @@ const Leave = () => {
     reason: "",
   });
 
-  const role = "admin";
+  const role = "employee";
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 800);
