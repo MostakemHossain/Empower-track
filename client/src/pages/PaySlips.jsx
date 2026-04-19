@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { dummyPayslipData, dummyEmployeeData } from "../assets/assets";
 import {  Download, Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const PaySlips = () => {
   const role = "admin"; // "employee"
   const currentUserId = "69b411e6f8a807df391d7b13";
+  const navigate = useNavigate();
 
   const [payslips, setPayslips] = useState(dummyPayslipData);
   const [openModal, setOpenModal] = useState(false);
@@ -190,7 +192,9 @@ const PaySlips = () => {
                 <td className="px-8 py-5 text-right space-x-2">
                   
 
-                  <button className="p-2 bg-emerald-100 text-emerald-600 rounded-xl">
+                  <button 
+                  onClick={() => navigate(`/print/payslips/${p._id}`)}
+                  className="p-2 bg-emerald-100 text-emerald-600 rounded-xl">
                     <Download size={18} />
                   </button>
                 </td>
