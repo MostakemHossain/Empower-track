@@ -1,6 +1,11 @@
 import app from "./app.js";
+import connectDB from "./config/db.js";
+
 
 const port = 4000;
+
+// Connect DB first
+connectDB();
 
 const server = app.listen(port, () => {
   console.log(`🚀 Server running at http://localhost:${port}`);
