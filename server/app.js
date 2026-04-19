@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import multer from "multer";
+import dotenv from "dotenv";
+
 
 const app = express();
 
@@ -9,6 +11,7 @@ app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(multer().none());
+dotenv.config()
 
 // Routes
 app.get("/", (req, res) => {
