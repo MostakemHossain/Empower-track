@@ -13,6 +13,17 @@ const createEmployee= catchAsync(async (req, res) => {
       data: result,
     });
   });
+
+const getAllEmployees = catchAsync(async (req, res) => {
+    const result = await EmployeeService.getAllEmployees(req);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Employees fetched successfully!',
+      data: result,
+    });
+  });
 export const EmployeeController = {
-    createEmployee
+    createEmployee,
+    getAllEmployees,
 }

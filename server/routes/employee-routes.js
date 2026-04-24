@@ -12,6 +12,11 @@ router.post(
     return EmployeeController.createEmployee(req, res, next);
   }
 );
+router.get(
+  "/get-all-employees", 
+  //   auth("admin", "super-admin"),
+  EmployeeController.getAllEmployees
+);
 
 const EmployeeRouter = router;
 export default EmployeeRouter;

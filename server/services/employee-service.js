@@ -81,7 +81,6 @@ const createEmployee = async (req) => {
     photo: photoUrl,
   });
 
-  // 🔹 7. Return + send password (IMPORTANT)
   return {
     user,
     employee,
@@ -89,6 +88,53 @@ const createEmployee = async (req) => {
   };
 };
 
+const getAllEmployees = async (req) => {
+  const { search, department, status } = req.query;
+
+  const query = {
+    isDeleted: false, // good practice
+  };
+
+  // 🔍 Search
+  if (search) {
+    const searchRegex = new RegExp(search, "i");
+
+    query.$or = [
+      { firstName: searchRegex },
+      { lastName: searchRegex },
+      {
+        $expr: {
+          $regexMatch: {
+            input: { $concat: ["$firstName", " ", "$lastName"] },
+            regex: search,
+            options: "i",
+          },
+        },
+      },
+    ];
+  }
+
+  // 🏢 Department
+  if (department && department !== "ALL") {
+    query.department = department;
+  }
+
+  // 🟢 Status (FIXED)
+  if (status && status !== "ALL") {
+    query.employmentStatus = status;
+  }
+
+  const employees = await Employee.find(query)
+    .populate("user", "email role")
+    .sort({ createdAt: -1 });
+
+  return {
+    total: employees.length,
+    data: employees,
+  };
+};
+
 export const EmployeeService = {
   createEmployee,
+  getAllEmployees,
 };
