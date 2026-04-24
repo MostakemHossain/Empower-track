@@ -1,3 +1,4 @@
+import AppError from "../errors/app-error.js";
 import Employee from "../models/employee-modal.js";
 import User from "../models/user-model.js";
 import { fileUploader } from "../shared/fileUpload.js";
@@ -134,7 +135,81 @@ const getAllEmployees = async (req) => {
   };
 };
 
+const updateEmployee = async (req) => {
+  const { id } = req.params;
+
+  const {
+    firstName,
+    lastName,
+    phone,
+    position,
+    department,
+    baseSalary,
+    allowances,
+    deductions,
+    dateOfBirth,
+    joiningDate,
+    address,
+    bio,
+    employmentStatus,
+  } = req.body;
+
+  // 🔍 1. Check employee exists
+  const existingEmployee = await Employee.findById(id);
+
+  if (!existingEmployee) {
+    throw new AppError("Employee not found");
+  }
+
+  // 🖼️ 2. Image upload (optional)
+  let photoUrl = existingEmployee.photo;
+
+  if (req.file) {
+    const uploaded = await fileUploader.uploadToCloudinary(req.file);
+
+    if (uploaded?.secure_url) {
+      photoUrl = uploaded.secure_url;
+    } else {
+      throw new Error("Image upload failed");
+    }
+  }
+
+  // 🧠 3. Prepare update data
+  const updateData = {
+    firstName,
+    lastName,
+    phone,
+    position,
+    department,
+    baseSalary,
+    allowances,
+    deductions,
+    dateOfBirth,
+    joiningDate,
+    address,
+    bio,
+    employmentStatus,
+    photo: photoUrl,
+  };
+
+  // ❗ undefined field remove (important)
+  Object.keys(updateData).forEach((key) => {
+    if (updateData[key] === undefined) {
+      delete updateData[key];
+    }
+  });
+
+  // 🔄 4. Update employee
+  const updatedEmployee = await Employee.findByIdAndUpdate(
+    id,
+    updateData,
+    { new: true }
+  ).populate("user", "email role");
+
+  return updatedEmployee;
+};
 export const EmployeeService = {
   createEmployee,
   getAllEmployees,
+  updateEmployee,
 };
