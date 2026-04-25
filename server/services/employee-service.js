@@ -18,7 +18,6 @@ const createEmployee = async (req) => {
     address,
     bio,
   } = req.body;
-
   // 🔹 1. Get last employee
   const lastEmployee = await Employee.findOne({})
     .sort({ createdAt: -1 })
@@ -214,7 +213,9 @@ const deleteEmployee = async (req) => {
 
   const employee = await Employee.findByIdAndUpdate(
     id,
-    { isDeleted: true },
+    { isDeleted: true,
+      employmentStatus: "INACTIVE"
+     },
     { new: true }
   );
 
