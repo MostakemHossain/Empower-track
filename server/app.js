@@ -3,6 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import router from "./router/index.js";
 import cookieParser from "cookie-parser";
+import globalErrorHandler from "./middlewares/global-error-handler.js";
+import notFound from "./middlewares/not-found.js";
 
 const app = express();
 
@@ -26,5 +28,8 @@ app.get("/", (req, res) => {
 app.get("/test", (req, res) => {
   res.send("Hello World!");
 });
+
+app.use(globalErrorHandler);
+app.use(notFound);
 
 export default app;
