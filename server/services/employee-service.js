@@ -93,7 +93,7 @@ const getAllEmployees = async (req) => {
   const { search, department, status } = req.query;
 
   const query = {
-    isDeleted: false, // good practice
+    isDeleted: false, 
   };
 
   // 🔍 Search
@@ -208,8 +208,25 @@ const updateEmployee = async (req) => {
 
   return updatedEmployee;
 };
+
+const deleteEmployee = async (req) => {
+  const { id } = req.params;
+
+  const employee = await Employee.findByIdAndUpdate(
+    id,
+    { isDeleted: true },
+    { new: true }
+  );
+
+  if (!employee) {
+    throw new AppError("Employee not found");
+  }
+
+  return employee;
+};
 export const EmployeeService = {
   createEmployee,
   getAllEmployees,
   updateEmployee,
+  deleteEmployee,
 };

@@ -25,7 +25,6 @@ const getAllEmployees = catchAsync(async (req, res) => {
   });
 
   const updateEmployee = catchAsync(async (req, res) => {
-
     const result = await EmployeeService.updateEmployee(req);
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -34,8 +33,18 @@ const getAllEmployees = catchAsync(async (req, res) => {
       data: result,
     });
   })
+  const deleteEmployee= catchAsync(async (req, res) => {
+    const result = await EmployeeService.deleteEmployee(req);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Employee deleted successfully!',
+      data: result,
+    });
+  })
 export const EmployeeController = {
     createEmployee,
     getAllEmployees,
     updateEmployee,
+    deleteEmployee
 }

@@ -6,14 +6,14 @@ const router = express.Router();
 
 router.post(
   "/create-employee",
-  //   auth("admin", "super-admin"),
+  //   auth("admin"),
   fileUploader.upload.single("file"),
   parseMultipartData,
   EmployeeController.createEmployee
 );
 router.get(
   "/get-all-employees", 
-  //   auth("admin", "super-admin"),
+  //   auth("admin"),
   EmployeeController.getAllEmployees
 );
 router.put(
@@ -23,5 +23,10 @@ router.put(
   EmployeeController.updateEmployee
 );
 
+router.delete(
+  "/delete-employee/:id",
+  // auth("admin"),
+  EmployeeController.deleteEmployee
+);
 const EmployeeRouter = router;
 export default EmployeeRouter;
