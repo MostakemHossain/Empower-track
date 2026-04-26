@@ -4,6 +4,7 @@ import EmployeeRouter from '../routes/employee-routes.js';
 import AuthRoutes from '../routes/auth-routes.js';
 import ProfileRoutes from '../routes/profile-routes.js';
 import AttendanceRoute from '../routes/attendance-route.js';
+import LeaveRoute from '../routes/leave-route.js';
 
 const router = express.Router();
 
@@ -23,6 +24,10 @@ const moduleRoutes = [
   {
     path:"/attendance",
     route: AttendanceRoute,
+  },
+  {
+    path:"/leave",
+    route: LeaveRoute,
   }
   
 ];
