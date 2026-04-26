@@ -2,6 +2,8 @@ import express from 'express';
 
 import EmployeeRouter from '../routes/employee-routes.js';
 import AuthRoutes from '../routes/auth-routes.js';
+import ProfileRoutes from '../routes/profile-routes.js';
+import AttendanceRoute from '../routes/attendance-route.js';
 
 const router = express.Router();
 
@@ -14,6 +16,14 @@ const moduleRoutes = [
     path: '/auth',
     route: AuthRoutes,
   },
+  {
+    path:"/profile",
+    route: ProfileRoutes
+  },
+  {
+    path:"/attendance",
+    route: AttendanceRoute,
+  }
   
 ];
 

@@ -33,7 +33,7 @@ const Attendance = () => {
       checkOut: null,
       status: "PRESENT",
       workingHours: null,
-      dayType: null, // This will be handled by getDayTypeDisplay "In Progress"
+      dayType: null, 
     };
 
     setAttendanceRecords([newRecord, ...attendanceRecords]);
