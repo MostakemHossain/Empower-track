@@ -9,7 +9,6 @@ const AdminDashboard = () => {
     year: "numeric",
   });
 
-  /* ================= SAFE DATA ================= */
   const attendanceSeries = [
     {
       name: "Working Hours",

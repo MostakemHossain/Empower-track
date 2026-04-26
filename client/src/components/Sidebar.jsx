@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { dummyProfileData } from "../assets/assets";
 
-const Sidebar = ({ role = "admin" }) => {
+const Sidebar = ({ role = "employee" }) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);

@@ -4,7 +4,7 @@ import {  Download, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const PaySlips = () => {
-  const role = "admin"; // "employee"
+  const role = "employee"; // "employee"
   const currentUserId = "69b411e6f8a807df391d7b13";
   const navigate = useNavigate();
 
