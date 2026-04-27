@@ -64,6 +64,7 @@ const loginUser = async (payload) => {
     id: user._id,
     email: user.email,
     role: user.role,
+    employeeId: user.role === "EMPLOYEE" ? (await Employee.findOne({ user: user._id }))._id : null,
   };
 
   const accessToken = jwtHelpers.generateToken(
@@ -76,6 +77,7 @@ const loginUser = async (payload) => {
     id: user._id,
     email: user.email,
     role: user.role,
+    employeeId : user.role === "EMPLOYEE" ? (await Employee.findOne({ user: user._id }))._id : null,
     accessToken,
   };
 };
