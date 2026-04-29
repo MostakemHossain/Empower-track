@@ -6,6 +6,7 @@ import ProfileRoutes from '../routes/profile-routes.js';
 import AttendanceRoute from '../routes/attendance-route.js';
 import LeaveRoute from '../routes/leave-route.js';
 import PayslipRoute from '../routes/payslip-route.js';
+import DashboardRoute from '../routes/dashboard-route.js';
 
 const router = express.Router();
 
@@ -33,6 +34,11 @@ const moduleRoutes = [
   {
     path:"/payslip",
     route: PayslipRoute
+  },
+  {
+    path:"/dashboard",
+    route: DashboardRoute,
+
   }
   
 ];
