@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import seedAdmin from "../seed.js";
 
 const connectDB = async () => {
   try {
@@ -10,13 +10,14 @@ const connectDB = async () => {
     }
 
     const conn = await mongoose.connect(uri);
+    await seedAdmin();
 
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     console.error("❌ MongoDB connection failed:");
     console.error(error.message);
 
-    process.exit(1); 
+    process.exit(1);
   }
 };
 

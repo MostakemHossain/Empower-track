@@ -33,10 +33,6 @@ const getDashboard = async (req) => {
       status: "PENDING",
       isDeleted: false,
     });
-      const totalLeaves = await Leave.countDocuments({
-    employee: employee._id,
-    isDeleted: false,
-  });
 
     return {
       role: "ADMIN",
