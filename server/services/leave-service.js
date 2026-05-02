@@ -1,4 +1,5 @@
 import AppError from "../errors/app-error.js";
+import { inngest } from "../inngest/index.js";
 import Employee from "../models/employee-modal.js";
 import Leave from "../models/leave-modal.js";
 import httpStatus from "http-status";
@@ -44,6 +45,14 @@ const createLeave = async (req) => {
     endDate: end,
     reason,
   });
+  await inngest.send({
+    name: "leave-request-created",
+    data: {
+      employeeId: employee._id.toString(),
+      employeeName: `${employee.firstName} ${employee.lastName}`,
+      leaveId: leave._id.toString(),
+    },
+  })
 
   return {
     message: "Leave request submitted successfully",
