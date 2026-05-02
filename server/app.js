@@ -5,6 +5,8 @@ import router from "./router/index.js";
 import cookieParser from "cookie-parser";
 import globalErrorHandler from "./middlewares/global-error-handler.js";
 import notFound from "./middlewares/not-found.js";
+import { serve } from "inngest/express";
+import { inngest, functions } from "../server/inngest/index.js";
 
 const app = express();
 
@@ -17,6 +19,7 @@ app.use(cookieParser());
 
 
 app.use('/api/v1', router);
+app.use("/api/inngest", serve({ client: inngest, functions }));
 
 // Routes
 app.get("/", (req, res) => {

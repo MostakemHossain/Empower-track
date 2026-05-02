@@ -2,6 +2,7 @@ import httpStatus from "http-status";
 import Employee from "../models/employee-modal.js";
 import Attendance from "../models/attendence-modal.js";
 import AppError from "../errors/app-error.js";
+import { inngest } from "../inngest/index.js";
 
 const checkInOut = async (req) => {
   const userId = req.user.id;
@@ -51,11 +52,22 @@ const checkInOut = async (req) => {
       status: isLate ? "LATE" : "PRESENT",
     });
 
+    await inngest.send({
+      name: "employee-check-in",
+      data: {
+        employeeId: employee._id.toString(),
+        employeeName: `${employee.firstName} ${employee.lastName}`,
+        attendanceId: attendance._id.toString(),
+        checkInTime: now.toISOString(),
+        isLate,
+      },
+    })
     return {
       message: isLate ? "Check-in successful (Late)" : "Check-in successful",
       data: attendance,
     };
   }
+
 
   // ===============================
   // ✅ CASE 2: CHECK-OUT
