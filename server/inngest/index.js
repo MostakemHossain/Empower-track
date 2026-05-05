@@ -85,21 +85,34 @@ const leaveApplicationRemainder = inngest.createFunction(
 const attendanceRemainderCron = inngest.createFunction(
   {
     id: "attendance-remainder-cron",
-    triggers: [{ cron: "0 30 5 * * *" }], // 11:30 AM BD
+    triggers: [{ cron: "30 5 * * *" }], // 11:30 AM Bangladesh (UTC+6)
   },
   async ({ step }) => {
-    // Step 1: Date range
-    const today = await step.run("get-today-date-range", () => {
-      const startUTC = new Date();
-      startUTC.setUTCHours(0, 0, 0, 0);
+    // ✅ Step 1: Get BD date range (IMPORTANT FIX)
+    const today = await step.run("get-today-date-range-bd", () => {
+      const now = new Date();
 
-      const endUTC = new Date();
-      endUTC.setUTCHours(23, 59, 59, 999);
+      // Convert to Bangladesh time (UTC+6)
+      const bdOffset = 6 * 60; // minutes
+      const localOffset = now.getTimezoneOffset(); // user's env offset
+      const bdTime = new Date(now.getTime() + (bdOffset + localOffset) * 60000);
+
+      // Start of BD day
+      const startBD = new Date(bdTime);
+      startBD.setHours(0, 0, 0, 0);
+
+      // End of BD day
+      const endBD = new Date(bdTime);
+      endBD.setHours(23, 59, 59, 999);
+
+      // Convert back to UTC for DB query
+      const startUTC = new Date(startBD.getTime() - (bdOffset * 60000));
+      const endUTC = new Date(endBD.getTime() - (bdOffset * 60000));
 
       return { startUTC, endUTC };
     });
 
-    // Step 2: Employees
+    // ✅ Step 2: Employees
     const employees = await step.run("get-all-active-employees", async () => {
       const data = await Employee.find({
         employmentStatus: "ACTIVE",
@@ -109,63 +122,65 @@ const attendanceRemainderCron = inngest.createFunction(
       return data.map((e) => ({
         _id: e._id.toString(),
         firstName: e.firstName,
-        lastName: e.lastName,
         email: e.email,
-        department: e.department,
       }));
     });
 
-    // Step 3: Leaves
-    const employeeIdsOnLeave = await step.run(
-      "get-employees-on-leave-today",
-      async () => {
-        const leaves = await Leave.find({
-          status: "APPROVED",
-          startDate: { $lte: today.endUTC },
-          endDate: { $gte: today.startUTC },
-        }).lean();
+    // ✅ Step 3: Employees on Leave (Use Set for performance)
+    const leaveSet = await step.run("get-employees-on-leave", async () => {
+      const leaves = await Leave.find({
+        status: "APPROVED",
+        startDate: { $lte: today.endUTC },
+        endDate: { $gte: today.startUTC },
+      }).lean();
 
-        return leaves.map((leave) => leave.employee.toString());
-      }
-    );
+      return new Set(leaves.map((l) => l.employee.toString()));
+    });
 
-    // Step 4: Attendance
-    const attendances = await step.run("get-todays-attendance", async () => {
+    // ✅ Step 4: Attendance (Use Set)
+    const attendanceSet = await step.run("get-attendance", async () => {
       const data = await Attendance.find({
         checkIn: { $gte: today.startUTC, $lte: today.endUTC },
       }).lean();
 
-      return data.map((a) => a.employee.toString());
+      return new Set(data.map((a) => a.employee.toString()));
     });
 
-    // Step 5: Absent filter
+    // ✅ Step 5: Filter Absent (O(n) efficient)
     const absentEmployees = employees.filter(
-      (e) => !employeeIdsOnLeave.includes(e._id) && !attendances.includes(e._id)
+      (e) => !leaveSet.has(e._id) && !attendanceSet.has(e._id)
     );
 
-    // step 6: Send remainder email
-    if(absentEmployees.length > 0){
-      for(const emp of absentEmployees){
-        sendEmail({
-          to: emp.email,
-          subject: "Attendance Reminder",
-          text: `Dear ${emp.firstName},\n\nOur records indicate that you have not checked in for today. Please remember to check in as soon as possible.\n\nBest regards,\nHR Team`,
-        });
-      }
+    // ✅ Step 6: Send Emails (parallel optimization)
+    if (absentEmployees.length > 0) {
+      await Promise.all(
+        absentEmployees.map((emp) =>
+          sendEmail({
+            to: emp.email,
+            subject: "Attendance Reminder",
+            text: `Dear ${emp.firstName},
+
+Our records indicate that you have not checked in for today.
+Please check in as soon as possible.
+
+Best regards,
+HR Team`,
+          })
+        )
+      );
     }
 
-    // ✅ FINAL RETURN (FULL DATA)
+    // ✅ Final Return
     return {
       summary: {
         totalActive: employees.length,
-        onLeave: employeeIdsOnLeave.length,
-        checkedIn: attendances.length,
+        onLeave: leaveSet.size,
+        checkedIn: attendanceSet.size,
         absent: absentEmployees.length,
       },
     };
   }
 );
-
 export const functions = [
   autoCheckout,
   leaveApplicationRemainder,
