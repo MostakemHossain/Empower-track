@@ -103,7 +103,20 @@ const changePassword=async (req) => {
 
   return { message: "Password changed successfully" };
 }
+
+const me = async (req) => {
+  const userId = req.user.id;
+
+  const user = await User.findById(userId).select("-password");
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  return user;
+}
 export const AuthService = {
     loginUser,
-    changePassword
+    changePassword,
+    me
 }

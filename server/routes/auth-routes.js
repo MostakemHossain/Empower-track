@@ -6,6 +6,7 @@ import auth from "../middlewares/auth.js";
 const router = express.Router();
 
 router.post("/login",validateRequest(AuthValidation.loginValidationSchema), AuthController.loginUser);
+router.get("/me", auth("ADMIN","EMPLOYEE"), AuthController.me);
 router.post("/change-password", auth("ADMIN","EMPLOYEE"),AuthController.changePassword);
 const AuthRoutes = router;
 export default AuthRoutes;
