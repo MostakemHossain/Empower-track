@@ -11,15 +11,18 @@ import {
   X,
   LogOut,
 } from "lucide-react";
-import { dummyProfileData } from "../assets/assets";
+import { useAuth } from "../context/AuthContext";
 
-const Sidebar = ({ role = "employee" }) => {
+const Sidebar = ({ role }) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { user } = useAuth();
 
   const userName =
-    dummyProfileData.firstName + " " + dummyProfileData.lastName;
+    role === "admin"
+      ? user?.email
+      : user.name;
 
   // 🔥 Menu based on role
   const menuItems = [
@@ -67,12 +70,8 @@ const Sidebar = ({ role = "employee" }) => {
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-white/10">
           <div>
-            <h2 className="text-lg font-semibold tracking-wide">
-              Employee MS
-            </h2>
-            <p className="text-xs text-gray-400">
-              Management System
-            </p>
+            <h2 className="text-lg font-semibold tracking-wide">Empower Track</h2>
+            <p className="text-xs text-gray-400">Employee Management System</p>
           </div>
           <button
             className="md:hidden hover:rotate-90 transition"
@@ -84,17 +83,15 @@ const Sidebar = ({ role = "employee" }) => {
 
         {/* Profile */}
         <div className="p-4">
-          <div className="flex items-center gap-3 bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/10 hover:border-indigo-500 transition">
-            <div className="w-11 h-11 flex items-center justify-center bg-indigo-600/20 text-indigo-400 rounded-xl font-semibold text-lg">
-              {userName?.charAt(0)}
+          <div className="flex items-center gap-3 bg-white/5 backdrop-blur-md p-2 rounded-2xl border border-white/10 hover:border-indigo-500 transition">
+            <div className="w-11 h-6 p-1 flex items-center justify-center bg-indigo-600/20 text-indigo-400 rounded-xl font-semibold text-xs leading-tight text-center break-all">
+              {userName?.charAt(0).toUpperCase()}
             </div>
             <div>
               <h3 className="text-sm font-semibold tracking-wide">
                 {userName}
               </h3>
-              <p className="text-xs text-gray-400 capitalize">
-                {role}
-              </p>
+              <p className="text-xs text-gray-400 capitalize">{role}</p>
             </div>
           </div>
         </div>
@@ -159,16 +156,11 @@ const Sidebar = ({ role = "employee" }) => {
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-white bg-white/5 hover:bg-red-500/20 transition-all duration-300 group"
           >
-            <LogOut
-              size={18}
-              className="group-hover:-rotate-12 transition"
-            />
+            <LogOut size={18} className="group-hover:-rotate-12 transition" />
             <span className="text-sm font-medium">Logout</span>
           </button>
 
-          <div className="text-xs text-gray-500 text-center">
-            © 2026 EMS
-          </div>
+          <div className="text-xs text-gray-500 text-center">© 2026 EMS</div>
         </div>
       </div>
     </>

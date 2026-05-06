@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
       const { data } = await api.get("/auth/me");
 
       setToken(storedToken);
-      setUser(data?.user || {});
+      setUser(data?.data || {});
     } catch (error) {
       console.error("Session refresh failed", error);
       localStorage.removeItem("token");
@@ -43,8 +43,8 @@ export const AuthProvider = ({ children }) => {
     try {
       const { data } = await api.post("/auth/login", credentials);
 
-      const newToken = data?.token;
-      const userData = data?.user;
+      const newToken = data?.data?.accessToken;
+      const userData = data?.data;
 
       localStorage.setItem("token", newToken);
 

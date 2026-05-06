@@ -3,10 +3,12 @@ import LoginLeftSide from "./LoginLeftSide"
 import { useNavigate } from "react-router-dom"
 import { Eye, EyeOff } from "lucide-react"
 import { useForm } from "react-hook-form"
+import { useAuth } from "../context/AuthContext"
 
 const LoginForm = ({ role = "employee", subTitle }) => {
   const navigate = useNavigate()
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
+  const { login } = useAuth();
 
   const {
     register,
@@ -14,14 +16,28 @@ const LoginForm = ({ role = "employee", subTitle }) => {
     formState: { errors, isSubmitting },
   } = useForm()
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const payload = {
       role,
-      ...data,
+      identifier: role === "admin" ? data.email : data.employeeId,
+      password: data.password,
+    };
+  
+    try {
+      const res = await login(payload);
+      console.log("Login response:", res);
+  
+      if (!res.success) {
+        throw new Error(res.message);
+      }
+  
+      navigate("/dashboard");
+  
+    } catch (error) {
+      console.error("Login error:", error);
+      alert(error.message || "Login failed");
     }
-
-    console.log("LOGIN DATA:", payload)
-  }
+  };
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
