@@ -1,7 +1,8 @@
 import Chart from "react-apexcharts";
-import { dummyAdminDashboardData, dummyAttendanceData } from "../assets/assets";
 
-const AdminDashboard = () => {
+const AdminDashboard = ({ data }) => {
+  console.log(data);
+
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     day: "numeric",
@@ -9,10 +10,14 @@ const AdminDashboard = () => {
     year: "numeric",
   });
 
+  // ================= ATTENDANCE CHART =================
   const attendanceSeries = [
     {
-      name: "Working Hours",
-      data: dummyAttendanceData?.map((d) => d.workingHours || 0) || [],
+      name: "Attendance",
+      data:
+        data.data?.attendanceOverview?.map(
+          (d) => d.workingHours || 0
+        ) || [],
     },
   ];
 
@@ -22,27 +27,39 @@ const AdminDashboard = () => {
       toolbar: { show: false },
       zoom: { enabled: false },
     },
-    stroke: { curve: "smooth" },
+
+    stroke: {
+      curve: "smooth",
+    },
+
     xaxis: {
       categories:
-        dummyAttendanceData?.map((d) =>
+        data?.attendanceOverview?.map((d) =>
           new Date(d.date).toLocaleDateString()
         ) || [],
     },
-    dataLabels: { enabled: false },
+
+    dataLabels: {
+      enabled: false,
+    },
   };
 
+  // ================= PIE CHART =================
   const pieSeries = [
-    dummyAdminDashboardData?.todayAttendance || 0,
-    dummyAdminDashboardData?.pendingLeaves || 0,
+    data?.todayAttendance || 0,
+    data?.pendingLeaves || 0,
   ];
 
   const pieOptions = {
     chart: {
       type: "donut",
     },
+
     labels: ["Present", "Leaves"],
-    legend: { position: "bottom" },
+
+    legend: {
+      position: "bottom",
+    },
   };
 
   return (
@@ -50,10 +67,12 @@ const AdminDashboard = () => {
 
       {/* ================= HEADER ================= */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+
         <div>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
             Admin Dashboard
           </h1>
+
           <p className="text-gray-500 mt-1">{today}</p>
         </div>
 
@@ -67,25 +86,25 @@ const AdminDashboard = () => {
 
         <StatCard
           title="Employees"
-          value={dummyAdminDashboardData.totalEmployees}
+          value={data?.totalEmployees || 0}
           color="from-indigo-500 to-indigo-600"
         />
 
         <StatCard
           title="Departments"
-          value={dummyAdminDashboardData.totalDepartments}
+          value={data?.totalDepartments || 0}
           color="from-blue-500 to-blue-600"
         />
 
         <StatCard
           title="Today Attendance"
-          value={dummyAdminDashboardData.todayAttendance}
+          value={data?.todayAttendance || 0}
           color="from-emerald-500 to-emerald-600"
         />
 
         <StatCard
           title="Pending Leaves"
-          value={dummyAdminDashboardData.pendingLeaves}
+          value={data?.pendingLeaves || 0}
           color="from-red-500 to-red-600"
         />
       </div>
@@ -95,6 +114,7 @@ const AdminDashboard = () => {
 
         {/* Attendance Chart */}
         <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
+
           <h2 className="text-lg font-semibold text-gray-700 mb-4">
             Attendance Overview
           </h2>
@@ -109,6 +129,7 @@ const AdminDashboard = () => {
 
         {/* Pie Chart */}
         <div className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
+
           <h2 className="text-lg font-semibold text-gray-700 mb-4">
             Today Summary
           </h2>
@@ -122,14 +143,16 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* ================= ACTIVITY ================= */}
+      {/* ================= RECENT ACTIVITY ================= */}
       <div className="bg-white p-6 rounded-2xl shadow">
+
         <h2 className="text-lg font-semibold text-gray-700 mb-5">
           Recent Activity
         </h2>
 
         <div className="space-y-4">
-          {dummyAttendanceData?.slice(0, 5).map((item, i) => (
+
+          {data?.recentAttendance?.map((item, i) => (
             <div
               key={i}
               className="flex items-center justify-between p-4 rounded-xl hover:bg-gray-50 transition"
@@ -138,6 +161,7 @@ const AdminDashboard = () => {
                 <p className="font-medium text-gray-800">
                   Attendance marked ({item.status})
                 </p>
+
                 <p className="text-xs text-gray-400">
                   {new Date(item.date).toLocaleDateString()}
                 </p>
@@ -157,6 +181,7 @@ const AdminDashboard = () => {
 export default AdminDashboard;
 
 /* ================= STATS CARD ================= */
+
 const StatCard = ({ title, value, color }) => {
   return (
     <div
@@ -164,7 +189,10 @@ const StatCard = ({ title, value, color }) => {
       shadow-lg hover:scale-105 hover:shadow-2xl transition duration-300 cursor-pointer`}
     >
       <p className="text-sm opacity-80">{title}</p>
-      <h2 className="text-3xl font-bold mt-2">{value}</h2>
+
+      <h2 className="text-3xl font-bold mt-2">
+        {value}
+      </h2>
     </div>
   );
 };

@@ -17,12 +17,9 @@ const Sidebar = ({ role }) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
-  const userName =
-    role === "admin"
-      ? user?.email
-      : user.name;
+  const userName = role === "admin" ? user?.email : user.name;
 
   // 🔥 Menu based on role
   const menuItems = [
@@ -38,8 +35,7 @@ const Sidebar = ({ role }) => {
 
   // 🔴 Logout handler
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
+    logout();
   };
 
   return (
@@ -70,7 +66,9 @@ const Sidebar = ({ role }) => {
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-white/10">
           <div>
-            <h2 className="text-lg font-semibold tracking-wide">Empower Track</h2>
+            <h2 className="text-lg font-semibold tracking-wide">
+              Empower Track
+            </h2>
             <p className="text-xs text-gray-400">Employee Management System</p>
           </div>
           <button

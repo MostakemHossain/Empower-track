@@ -1,9 +1,14 @@
 import LoginLeftSide from "../components/LoginLeftSide";
-import {  useNavigate } from "react-router-dom";
+import {  Navigate, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 
 const LoginLanding = () => {
   const navigate = useNavigate();
+  const {user}= useAuth();
+  if(user){
+    return <Navigate to="/"/>
+  }
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-gray-50 to-gray-100">
