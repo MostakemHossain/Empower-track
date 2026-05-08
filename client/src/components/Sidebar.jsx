@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation, Link, useNavigate } from "react-router-dom";
+import { useLocation, Link, } from "react-router-dom";
 import {
   LayoutDashboard,
   CalendarDays,
@@ -15,7 +15,6 @@ import { useAuth } from "../context/AuthContext";
 
 const Sidebar = ({ role }) => {
   const { pathname } = useLocation();
-  const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user, logout } = useAuth();
 
@@ -81,14 +80,10 @@ const Sidebar = ({ role }) => {
 
         {/* Profile */}
         <div className="p-4">
-          <div className="flex items-center gap-3 bg-white/5 backdrop-blur-md p-2 rounded-2xl border border-white/10 hover:border-indigo-500 transition">
-            <div className="w-11 h-6 p-1 flex items-center justify-center bg-indigo-600/20 text-indigo-400 rounded-xl font-semibold text-xs leading-tight text-center break-all">
-              {userName?.charAt(0).toUpperCase()}
-            </div>
+          <div className="flex items-center gap-5 bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-white/10 hover:border-indigo-500 transition">
+          
             <div>
-              <h3 className="text-sm font-semibold tracking-wide">
-                {userName}
-              </h3>
+             
               <p className="text-xs text-gray-400 capitalize">{role}</p>
             </div>
           </div>

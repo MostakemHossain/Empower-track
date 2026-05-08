@@ -110,7 +110,7 @@ const EmployeeDashboard = ({ data }) => {
         <div className="flex items-center gap-4">
 
           <div className="w-12 h-12 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-lg">
-            {data?.employee?.firstName?.[0] || "E"}
+            {data?.employee?.firstName?.[0].toUpperCase() || "E"}
           </div>
 
           <div className="min-w-0">

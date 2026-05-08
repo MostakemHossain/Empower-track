@@ -1,4 +1,23 @@
-export const DEPARTMENTS = ["Engineering", "Human Resources", "Marketing", "Sales", "Finance", "Operations", "IT Support", "Customer Success", "Product Management", "Design"];
+export const DEPARTMENTS = [
+    "Frontend Development",
+    "Backend Development",
+    "Full Stack Development",
+    "Mobile App Development",
+    "UI/UX Design",
+    "Quality Assurance",
+    "DevOps & Cloud",
+    "Software Architecture",
+    "Cyber Security",
+    "Data Engineering",
+    "AI & Machine Learning",
+    "Product Management",
+    "Project Management",
+    "Business Analysis",
+    "Technical Support",
+    "Human Resources",
+    "Finance & Accounts",
+    "Sales & Marketing",
+  ];
 
 export const dummyAdminDashboardData = {
     role: "ADMIN",
