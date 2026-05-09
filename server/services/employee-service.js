@@ -54,7 +54,6 @@ const createEmployee = async (req) => {
   // 🔹 4. PASSWORD (your format)
   const rawPassword = `${employeeId}@${firstName.toLowerCase().replace(/\s+/g, "")}`;
   const hashedPassword = await bcrypt.hash(rawPassword, 10);
-
   // 🔹 5. Create User
   const user = await User.create({
     email,

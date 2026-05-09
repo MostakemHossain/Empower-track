@@ -76,7 +76,9 @@ const getLeaves = async (req) => {
 
     const leaves = await Leave.find({
       employee: employee._id,
-    }).sort({ createdAt: -1 });
+    })
+      .populate("employee")
+      .sort({ createdAt: -1 });
 
     const total = await Leave.countDocuments({
       employee: employee._id,
@@ -86,8 +88,15 @@ const getLeaves = async (req) => {
       total,
       data: leaves,
     };
-  } else {
-    const leaves = await Leave.find({}).sort({ createdAt: -1 });
+  }
+
+  // =========================
+  // 👨‍💼 ADMIN
+  // =========================
+  else {
+    const leaves = await Leave.find({})
+      .populate("employee")
+      .sort({ createdAt: -1 });
 
     const total = await Leave.countDocuments({});
 
