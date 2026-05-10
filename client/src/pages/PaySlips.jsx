@@ -63,6 +63,7 @@ const PaySlips = () => {
 
   useEffect(() => {
     if (user) fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   /* ================= AUTO-FILL LOGIC ================= */
@@ -167,7 +168,7 @@ const PaySlips = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[1000px]">
+            <table className="w-full min-w-250">
               <thead className="bg-slate-50 text-[11px] uppercase text-slate-400 font-black tracking-widest border-b border-slate-100">
                 <tr>
                   <th className="px-8 py-5 text-left">#</th>
@@ -301,7 +302,7 @@ const PaySlips = () => {
               <button
                 onClick={handleGenerate}
                 disabled={submitLoading}
-                className="flex-[2] py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                className="flex-2 py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {submitLoading ? (
                    <Loader2 className="animate-spin" size={20} />
@@ -318,7 +319,7 @@ const PaySlips = () => {
 /* ================= HELPERS ================= */
 
 const StatCard = ({ title, value, color }) => (
-  <div className={`p-8 rounded-[2rem] bg-gradient-to-br ${color} text-white shadow-xl shadow-slate-200 relative overflow-hidden group`}>
+  <div className={`p-8 rounded-4xl bg-linear-to-br ${color} text-white shadow-xl shadow-slate-200 relative overflow-hidden group`}>
     <div className="relative z-10">
       <p className="text-[10px] uppercase tracking-widest opacity-70 font-black">{title}</p>
       <h2 className="text-4xl font-black mt-1">{value}</h2>

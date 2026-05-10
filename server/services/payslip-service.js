@@ -78,10 +78,10 @@ const getPayslip = async (req) => {
 };
 
 const getPayslipById = async (req) => {
-  const id = req.user.id;
+  const id = req.params.id;
   
   // Use findOne when searching by fields other than _id
-  const result = await Payslip.findOne({ employee: id }).populate("employee");
+  const result = await Payslip.findById(id).populate("employee");
 
   if (!result) {
     throw new AppError(httpStatus.NOT_FOUND, "Payslip not found");

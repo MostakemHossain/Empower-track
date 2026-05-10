@@ -1,170 +1,188 @@
 import { useParams } from "react-router-dom";
-import { dummyPayslipData } from "../assets/assets";
-import { Printer } from "lucide-react";
-import { useRef } from "react";
+import { Printer, Loader2 } from "lucide-react";
+import { useRef, useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import api from "../api/axios";
 
 const PrintPaySlip = () => {
   const { id } = useParams();
   const printRef = useRef();
-
-  const payslip = dummyPayslipData.find((p) => p._id === id);
-
-  if (!payslip) {
-    return (
-      <div className="p-10 text-center text-red-500">
-        Payslip Not Found
-      </div>
-    );
-  }
-
-  const employee = payslip.employee;
+  
+  const [payslip, setPayslip] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const months = [
     "January","February","March","April","May","June",
     "July","August","September","October","November","December"
   ];
 
-  const monthName = months[payslip.month - 1];
-  const employeeId = "EMP-" + employee._id?.slice(-5).toUpperCase();
+  useEffect(() => {
+    const fetchPayslip = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get(`/payslip/get-payslip/${id}`);
+        setPayslip(response?.data?.data); 
+      } catch (error) {
+        console.error(error);
+        toast.error("Error fetching payslip details");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) fetchPayslip();
+  }, [id]);
 
   const handlePrint = () => window.print();
 
-  return (
-    <div className="min-h-screen bg-slate-100 flex justify-center p-6">
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
+        <Loader2 className="animate-spin text-indigo-600 mb-4" size={40} />
+        <p className="text-slate-500 font-bold tracking-widest uppercase text-xs">Loading Document...</p>
+      </div>
+    );
+  }
 
-      {/* PAYSLIP CARD */}
+  if (!payslip) {
+    return (
+      <div className="p-10 text-center text-red-500 font-bold">
+        Payslip Not Found
+      </div>
+    );
+  }
+
+  const employee = payslip.employee;
+  const monthName = months[payslip.month - 1];
+
+  return (
+    <div className="min-h-screen bg-slate-100 flex justify-center p-0 md:p-6">
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media print {
+          body { background: white !important; }
+          .print-container { padding: 0 !important; shadow: none !important; margin: 0 !important; width: 100% !important; max-width: none !important; }
+          .no-print { display: none !important; }
+        }
+      `}} />
       <div
         ref={printRef}
-        className="relative w-full max-w-3xl bg-white rounded-2xl shadow-md p-8 overflow-hidden"
+        className="print-container relative w-full max-w-3xl bg-white md:rounded-2xl shadow-md p-8 md:p-12 overflow-hidden"
       >
 
-        {/* WATERMARK */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <h1 className="text-[90px] font-bold text-slate-200 opacity-20 rotate-[-30deg]">
+          <h1 className="text-[90px] font-bold text-slate-200 opacity-20 rotate-[-30deg] select-none">
             EmpowerTrack
           </h1>
         </div>
-
-        {/* HEADER */}
-        <div className="relative flex justify-between items-start border-b pb-6 mb-6 z-10">
+        <div className="relative flex justify-between items-start border-b pb-6 mb-8 z-10">
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">
+            <h1 className="text-3xl font-black text-slate-800 tracking-tighter">
               EmpowerTrack
             </h1>
-            <p className="text-sm text-slate-500 mt-1">
-              Salary Payslip
+            <p className="text-xs font-bold text-indigo-600 uppercase tracking-widest mt-1">
+              Official Salary Payslip
             </p>
           </div>
 
           <div className="text-right">
-            <p className="text-sm text-slate-500">Period</p>
-            <p className="font-semibold text-slate-800">
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pay Period</p>
+            <p className="text-lg font-bold text-slate-800">
               {monthName} {payslip.year}
             </p>
           </div>
         </div>
 
-        {/* EMPLOYEE INFO */}
-        <div className="relative space-y-2 mb-6 text-sm z-10">
+        <div className="relative grid grid-cols-2 gap-6 mb-10 text-sm z-10">
+          <div className="space-y-3">
+            <div>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Employee Name</p>
+              <p className="font-bold text-slate-800 text-base">{employee?.firstName} {employee?.lastName}</p>
+            </div>
+            <div>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Employee ID</p>
+              <p className="font-semibold text-slate-700">{employee?.employeeId
+              }</p>
+            </div>
+          </div>
 
-          <p>
-            <span className="text-slate-500">Employee ID: </span>
-            <span className="font-medium">{employeeId}</span>
-          </p>
-
-          <p>
-            <span className="text-slate-500">Name: </span>
-            <span className="font-medium">
-              {employee.firstName} {employee.lastName}
-            </span>
-          </p>
-
-          <p>
-            <span className="text-slate-500">Email: </span>
-            <span className="font-medium">{employee.email}</span>
-          </p>
-
-          <p>
-            <span className="text-slate-500">Department: </span>
-            <span className="font-medium">{employee.department}</span>
-          </p>
-
-          <p>
-            <span className="text-slate-500">Position: </span>
-            <span className="font-medium">{employee.position}</span>
-          </p>
-
+          <div className="space-y-3 text-right">
+            <div>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Department</p>
+              <p className="font-semibold text-slate-700">{employee?.department || "N/A"}</p>
+            </div>
+            <div>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Designation</p>
+              <p className="font-semibold text-slate-700">{employee?.position || "Staff"}</p>
+            </div>
+          </div>
         </div>
 
-        {/* SALARY BREAKDOWN */}
-        <div className="relative border-t border-b py-6 mb-6 space-y-3 text-sm z-10">
-
-          <div className="flex justify-between">
-            <span className="text-slate-600">Basic Salary</span>
-            <span className="font-medium">${payslip.basicSalary}</span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="text-slate-600">Allowances</span>
-            <span className="font-medium text-emerald-600">
-              + ${payslip.allowances}
-            </span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="text-slate-600">Deductions</span>
-            <span className="font-medium text-red-500">
-              - ${payslip.deductions}
-            </span>
-          </div>
-
+        {/* SALARY BREAKDOWN TABLE */}
+        <div className="relative z-10 mb-8">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b-2 border-slate-100">
+                <th className="py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Description</th>
+                <th className="py-3 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">Amount</th>
+              </tr>
+            </thead>
+            <tbody className="text-sm">
+              <tr className="border-b border-slate-50">
+                <td className="py-4 text-slate-600 font-medium">Basic Monthly Salary</td>
+                <td className="py-4 text-right font-bold text-slate-800">${payslip.basicSalary?.toLocaleString()}</td>
+              </tr>
+              <tr className="border-b border-slate-50">
+                <td className="py-4 text-slate-600 font-medium">Allowances (Bonus, Transport, Medical)</td>
+                <td className="py-4 text-right font-bold text-emerald-600">+ ${payslip.allowances?.toLocaleString()}</td>
+              </tr>
+              <tr className="border-b border-slate-100">
+                <td className="py-4 text-slate-600 font-medium">Deductions (Tax, Insurance, Penalties)</td>
+                <td className="py-4 text-right font-bold text-rose-500">- ${payslip.deductions?.toLocaleString()}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
-        {/* NET SALARY */}
-        <div className="relative flex justify-between items-center mb-10 z-10">
-          <span className="text-base font-semibold text-slate-700">
-            Net Salary
-          </span>
-          <span className="text-2xl font-bold text-indigo-600">
-            ${payslip.netSalary}
+        {/* NET SALARY BOX */}
+        <div className="relative flex justify-between items-center p-6 bg-slate-50 rounded-2xl mb-12 z-10">
+          <div>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Net Payable Amount</p>
+            <p className="text-sm text-slate-500 italic mt-0.5">Total earnings after all deductions</p>
+          </div>
+          <span className="text-3xl font-black text-indigo-600">
+            ${payslip.netSalary?.toLocaleString()}
           </span>
         </div>
 
-        {/* MANAGER SIGNATURE */}
-        <div className="absolute bottom-10 right-10 text-right z-10">
-          <p className="text-sm font-semibold text-slate-700">
-            Authorized By
-          </p>
-
-          <div className="mt-2">
-            <p className="text-lg font-bold text-slate-900 italic">
-              EMP-MOSTAKEM
+        {/* SIGNATURE SECTION */}
+        <div className="relative flex justify-end mb-10 z-10">
+          <div className="text-center">
+             <p className="text-lg font-bold text-slate-900 italic font-serif">
+              MOSTAKEM
             </p>
-            <div className="h-[1px] w-40 bg-slate-400 mt-1"></div>
-            <p className="text-xs text-slate-500 mt-1">
-              Company Manager
+            <div className="h-[1.5px] w-48 bg-slate-300 mt-1 mx-auto"></div>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">
+              Authorized Signature
             </p>
           </div>
         </div>
 
-        {/* FOOTER */}
-        <div className="relative border-t pt-5 text-xs text-slate-500 space-y-1 z-10">
-          <p>support@empowertrack.com</p>
-          <p>+880 1234-567890</p>
 
-          <p className="text-center pt-2 text-slate-400">
-            This is a system-generated payslip.
-          </p>
+        <div className="relative border-t pt-6 text-[10px] font-bold text-slate-400 flex justify-between items-center z-10">
+          <div className="flex gap-4">
+            <p>support@empowertrack.com</p>
+            <p>+880 1849545637</p>
+          </div>
+          <p className="uppercase tracking-tighter">System Generated • No Stamp Required</p>
         </div>
 
-        {/* PRINT BUTTON ONLY */}
-        <div className="flex justify-center mt-10 print:hidden relative z-10">
+        <div className="no-print flex justify-center mt-12 relative z-20">
           <button
             onClick={handlePrint}
-            className="flex items-center gap-2 px-6 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700"
+            className="flex items-center gap-2 px-10 py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-black transition-all active:scale-95 shadow-xl shadow-slate-200"
           >
-            <Printer size={16} />
-            Print
+            <Printer size={20} strokeWidth={2.5} />
+            Print This Payslip
           </button>
         </div>
 
