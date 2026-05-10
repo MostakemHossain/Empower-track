@@ -7,6 +7,7 @@ const router = express.Router();
 router.post("/create-payslip", auth("ADMIN"), PayslipController.createPayslip);
 router.get("/get-payslips", auth("EMPLOYEE", "ADMIN"), PayslipController.getPayslip);
 router.get("/get-payslip/:id", auth("EMPLOYEE", "ADMIN"), PayslipController.getPayslipById);
+router.get("/get-payslip-by-employee", auth("EMPLOYEE"), PayslipController.getPaySlipByEmployee);
 
 const PayslipRoute = router;
 

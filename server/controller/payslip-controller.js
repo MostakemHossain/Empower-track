@@ -21,6 +21,15 @@ const getPayslip = catchAsync(async (req, res) => {
         data: result,
     });
 })
+const getPaySlipByEmployee = catchAsync(async (req, res) => {
+    const result = await PayslipService.getPaySlipByEmployee(req);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Payslips retrieved successfully!",
+        data: result,
+    });
+})
 
 const getPayslipById = catchAsync(async (req, res) => {
     const result = await PayslipService.getPayslipById(req);
@@ -35,5 +44,6 @@ const getPayslipById = catchAsync(async (req, res) => {
 export const PayslipController = {
     createPayslip,
     getPayslip,
-    getPayslipById
+    getPayslipById,
+    getPaySlipByEmployee,
 }

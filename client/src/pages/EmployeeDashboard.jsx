@@ -40,7 +40,7 @@ const EmployeeDashboard = ({ data, refreshData }) => {
     try {
       const res = await api.post("/attendance/check-in-out");
       toast.success(res.data?.message || "Success");
-      if (refreshData) refreshData(); // Refresh dashboard data
+      if (refreshData) refreshData(); 
     } catch (error) {
       toast.error(error.response?.data?.message || "Action failed");
     } finally {

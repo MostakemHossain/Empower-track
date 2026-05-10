@@ -6,18 +6,18 @@ import httpStatus from "http-status";
 const createPayslip = async (req) => {
   const payload = req.body;
 
-  const { employee, month, year, basicSalary, allowances, deductions } =
+  const { employeeId, month, year, basicSalary, allowances, deductions } =
     payload;
 
   const isEmployeeExist = await Employee.findById({
-    _id:employee
+    _id: employeeId,
   });
   if (!isEmployeeExist) {
     throw new AppError(httpStatus.NOT_FOUND, "Employee not found");
   }
 
   const isPayslipExist = await Payslip.findOne({
-    employee,
+    employeeId,
     month,
     year,
   });
@@ -32,7 +32,7 @@ const createPayslip = async (req) => {
   const netSalary = basicSalary + allowances - deductions;
 
   const result = await Payslip.create({
-    employee,
+    employee: employeeId,
     month,
     year,
     basicSalary,
@@ -45,52 +45,65 @@ const createPayslip = async (req) => {
 };
 
 const getPayslip = async (req) => {
-    const { page = 1, limit = 10, month, year, employee } = req.query;
-    const filter = {};
-  
-    if (req.user.role === "EMPLOYEE") {
-      filter.employee = req.user.employeeId;
-    } else if (req.user.role === "ADMIN") {
-      if (employee) filter.employee = employee;
-    }
+  const { page = 1, limit = 10, month, year, employee } = req.query;
+  const filter = {};
 
-    if (month) filter.month = Number(month);
-    if (year) filter.year = Number(year);
-  
-    const skip = (Number(page) - 1) * Number(limit);
-    console.log(filter);
-    const data = await Payslip.find(filter)
-      .populate("employee",)
-      .sort({ year: -1, month: -1 })
-      .skip(skip)
-      .limit(Number(limit));
-  
-    const total = await Payslip.countDocuments(filter);
-  
-    return {
-      meta: {
-        page: Number(page),
-        limit: Number(limit),
-        total,
-      },
-      data,
-    };
-  };
+  if (req.user.role === "EMPLOYEE") {
+    filter.employee = req.user.employeeId;
+  } else if (req.user.role === "ADMIN") {
+    if (employee) filter.employee = employee;
+  }
 
-  const getPayslipById = async (req) => {
-    const { id } = req.params;
-  
-    const result = await Payslip.findById(id).populate("employee");
-  
-    if (!result) {
-      throw new AppError(httpStatus.NOT_FOUND, "Payslip not found");
-    }
-  
-    return result;
+  if (month) filter.month = Number(month);
+  if (year) filter.year = Number(year);
+
+  const skip = (Number(page) - 1) * Number(limit);
+  console.log(filter);
+  const data = await Payslip.find(filter)
+    .populate("employee")
+    .sort({ year: -1, month: -1 })
+    .skip(skip)
+    .limit(Number(limit));
+
+  const total = await Payslip.countDocuments(filter);
+
+  return {
+    meta: {
+      page: Number(page),
+      limit: Number(limit),
+      total,
+    },
+    data,
   };
+};
+
+const getPayslipById = async (req) => {
+  const id = req.user.id;
+  
+  // Use findOne when searching by fields other than _id
+  const result = await Payslip.findOne({ employee: id }).populate("employee");
+
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, "Payslip not found");
+  }
+
+  return result;
+};
+
+const getPaySlipByEmployee = async (req) => {
+  const employeeId = req.user.employeeId;
+
+  const data = await Payslip.find({ employee: employeeId }).sort({
+    year: -1,
+    month: -1,
+  }).populate("employee");
+
+  return data;
+};
 
 export const PayslipService = {
   createPayslip,
   getPayslip,
-    getPayslipById, 
+  getPayslipById,
+  getPaySlipByEmployee,
 };
