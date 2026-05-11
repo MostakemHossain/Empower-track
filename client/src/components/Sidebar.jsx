@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation, Link, } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import {
   LayoutDashboard,
   CalendarDays,
@@ -18,21 +18,20 @@ const Sidebar = ({ role }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user, logout } = useAuth();
 
-  const userName = role === "admin" ? user?.email : user.name;
-
   // 🔥 Menu based on role
   const menuItems = [
     { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-    ...(role === "admin"
+    ...(user?.role === "ADMIN"
       ? [{ label: "Employees", icon: Users, path: "/employees" }]
       : []),
     { label: "Attendance", icon: CalendarDays, path: "/attendance" },
     { label: "Leave", icon: FileText, path: "/leave" },
     { label: "Payslips", icon: DollarSign, path: "/payslips" },
-    { label: "Settings", icon: Settings, path: "/settings" },
+    ...(user?.role === "EMPLOYEE"
+      ? [{ label: "Settings", icon: Settings, path: "/settings" }]
+      : []),
   ];
 
-  // 🔴 Logout handler
   const handleLogout = () => {
     logout();
   };
@@ -59,7 +58,7 @@ const Sidebar = ({ role }) => {
 
       {/* 🔹 Sidebar */}
       <div
-        className={`fixed md:static top-0 left-0 h-full w-72 bg-gradient-to-b from-[#0B1739] to-[#020617] text-white z-50 transform transition-all duration-300
+        className={`fixed md:static top-0 left-0 h-full w-72 bg-linear-to-b from-[#0B1739] to-[#020617] text-white z-50 transform transition-all duration-300
         ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
         {/* Header */}
@@ -81,9 +80,7 @@ const Sidebar = ({ role }) => {
         {/* Profile */}
         <div className="p-4">
           <div className="flex items-center gap-5 bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-white/10 hover:border-indigo-500 transition">
-          
             <div>
-             
               <p className="text-xs text-gray-400 capitalize">{role}</p>
             </div>
           </div>
@@ -108,7 +105,7 @@ const Sidebar = ({ role }) => {
                   className={`group relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300
                   ${
                     isActive
-                      ? "bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg"
+                      ? "bg-linear-to-r from-indigo-600 to-indigo-500 text-white shadow-lg"
                       : "text-gray-400 hover:text-white hover:bg-white/5"
                   }`}
                 >
@@ -135,7 +132,7 @@ const Sidebar = ({ role }) => {
 
                   {/* Hover Glow */}
                   {!isActive && (
-                    <span className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 bg-gradient-to-r from-indigo-500/10 to-transparent transition duration-300" />
+                    <span className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 bg-linear-to-r from-indigo-500/10 to-transparent transition duration-300" />
                   )}
                 </Link>
               );

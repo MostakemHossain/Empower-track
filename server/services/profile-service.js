@@ -39,6 +39,8 @@ const updateMyProfile = async (req) => {
       phone,
       address,
       bio,
+      dateOfBirth
+    
     } = req.body;
   
     let photoUrl = employee.photo;
@@ -59,6 +61,7 @@ const updateMyProfile = async (req) => {
       phone,
       address,
       bio,
+      dateOfBirth,
       photo: photoUrl,
     };
   
