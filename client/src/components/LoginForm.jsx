@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { Eye, EyeOff } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { useAuth } from "../context/AuthContext"
+import toast from "react-hot-toast"
 
 const LoginForm = ({ role = "employee", subTitle }) => {
   const navigate = useNavigate()
@@ -26,9 +27,11 @@ const LoginForm = ({ role = "employee", subTitle }) => {
     try {
       const res = await login(payload);
       console.log("Login response:", res);
+      toast.success("Login successful!");
   
       if (!res.success) {
-        throw new Error(res.message);
+        toast.error(res.message || "Login failed");
+        
       }
   
       navigate("/dashboard");
@@ -46,7 +49,7 @@ const LoginForm = ({ role = "employee", subTitle }) => {
       <LoginLeftSide />
 
       {/* RIGHT SIDE */}
-      <div className="flex flex-1 items-center justify-center px-6 py-12 bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="flex flex-1 items-center justify-center px-6 py-12 bg-linear-to-br from-gray-50 to-gray-100">
 
         <div className="w-full max-w-md">
 
@@ -70,7 +73,7 @@ const LoginForm = ({ role = "employee", subTitle }) => {
               <span className="text-gray-900">Welcome to </span>
 
               <span
-                className={`bg-gradient-to-r bg-clip-text text-transparent ${
+                className={`bg-linear-to-r bg-clip-text text-transparent ${
                   role === "admin"
                     ? "from-blue-600 via-indigo-500 to-blue-600"
                     : "from-emerald-500 via-green-500 to-emerald-500"

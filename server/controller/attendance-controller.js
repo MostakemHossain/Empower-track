@@ -23,7 +23,18 @@ const getAttendanceEmployee = catchAsync(async (req, res) => {
   });
 });
 
+const getAttendanceByDate = catchAsync(async (req, res) => {
+  const result = await AttendanceService.getAttendanceByDate(req, res);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Attendance fetched successfully!",
+    data: result,
+  });
+})
+
 export const AttendanceController = {
   checkInOut,
   getAttendanceEmployee,
+  getAttendanceByDate,
 };

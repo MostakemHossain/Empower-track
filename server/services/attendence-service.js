@@ -124,7 +124,147 @@ const getAttendanceEmployee = async (req) => {
   return data;
 };
 
+const getAttendanceByDate = async (req, res) => {
+  try {
+    const { date } = req.query;
+
+    // START & END DATE
+    const start = new Date(date);
+    start.setHours(0, 0, 0, 0);
+
+    const end = new Date(date);
+    end.setHours(23, 59, 59, 999);
+
+    // GET ALL EMPLOYEES
+    const employees = await Employee.find().select(
+      "firstName lastName employeeId department"
+    );
+
+    // GET ATTENDANCE OF SELECTED DATE
+    const attendanceRecords = await Attendance.find({
+      date: {
+        $gte: start,
+        $lte: end,
+      },
+    })
+      .populate(
+        "employee",
+        "firstName lastName employeeId department"
+      )
+      .sort({ createdAt: -1 });
+
+    // MERGE ALL EMPLOYEES + ATTENDANCE
+    const finalAttendance = employees.map(
+      (employee) => {
+        const attendance =
+          attendanceRecords.find(
+            (item) =>
+              item.employee?._id?.toString() ===
+              employee._id.toString()
+          );
+
+        // PRESENT / LATE
+        if (attendance) {
+          return {
+            _id: attendance._id,
+            employee: {
+              _id: employee._id,
+              firstName: employee.firstName,
+              lastName: employee.lastName,
+              employeeId: employee.employeeId,
+              department: employee.department,
+            },
+            date: attendance.date,
+            checkIn: attendance.checkIn,
+            checkOut: attendance.checkOut,
+            status: attendance.status,
+            workingHours:
+              attendance.workingHours || 0,
+            dayType:
+              attendance.dayType ||
+              "Full Day",
+          };
+        }
+
+        // ABSENT
+        return {
+          _id: employee._id,
+          employee: {
+            _id: employee._id,
+            firstName: employee.firstName,
+            lastName: employee.lastName,
+            employeeId: employee.employeeId,
+            department: employee.department,
+          },
+          date,
+          checkIn: null,
+          checkOut: null,
+          status: "ABSENT",
+          workingHours: 0,
+          dayType: "Absent",
+        };
+      }
+    );
+
+    // SORT PRESENT FIRST
+    finalAttendance.sort((a, b) => {
+      if (a.status === "ABSENT") return 1;
+      if (b.status === "ABSENT") return -1;
+      return 0;
+    });
+
+    // STATS
+    const totalPresent =
+      finalAttendance.filter(
+        (item) =>
+          item.status === "PRESENT" ||
+          item.status === "LATE"
+      ).length;
+
+    const totalAbsent =
+      finalAttendance.filter(
+        (item) =>
+          item.status === "ABSENT"
+      ).length;
+
+    const avgHours =
+      finalAttendance.length > 0
+        ? (
+            finalAttendance.reduce(
+              (acc, curr) =>
+                acc +
+                (curr.workingHours || 0),
+              0
+            ) / finalAttendance.length
+          ).toFixed(1)
+        : 0;
+
+    res.status(200).json({
+      success: true,
+
+      stats: {
+        totalEmployees:
+          employees.length,
+        totalPresent,
+        totalAbsent,
+        avgHours,
+      },
+
+      data: finalAttendance,
+    });
+  
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 export const AttendanceService = {
   checkInOut,
   getAttendanceEmployee,
+  getAttendanceByDate,
 };
