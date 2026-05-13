@@ -1,4 +1,6 @@
 import { createTransport } from "nodemailer";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const transporter = createTransport({
   host: process.env.EMAIL_HOST,
@@ -10,6 +12,7 @@ export const transporter = createTransport({
 });
 
 const sendEmail = async (to, subject, body) => {
+  console.log(to);
   const response = await transporter.sendMail({
     from: process.env.SENDER_EMAIL,
     to,

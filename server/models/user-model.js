@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema(
       minlength: 6,
       select: false,
     },
+    isPasswordChanged: {
+      type: Boolean,
+      default: false,
+    },
     role: {
       type: String,
       enum: ["ADMIN", "EMPLOYEE"],
