@@ -60,7 +60,7 @@ const Employees = () => {
   }, [search, department, activeTab]);
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 via-white to-indigo-50 px-4 md:px-10 py-6">
+    <div className="min-h-screen w-full bg-linear-to-br from-slate-50 via-white to-indigo-50 px-4 md:px-10 py-6">
       {/* HEADER */}
       <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-8">
         <div>
@@ -219,7 +219,7 @@ const Employees = () => {
                           : "bg-red-100 text-red-700"
                       }`}
                     >
-                      {emp.employmentStatus}
+                      {emp.employeeId}
                     </span>
                   </div>
 

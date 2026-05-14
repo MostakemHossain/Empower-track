@@ -7,10 +7,10 @@ import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
 import PaySlips from "./pages/PaySlips";
 import Leave from "./pages/Leave";
-import Attendance from "./pages/Attendance";
 import Employees from "./pages/Employees";
 import PrintPaySlip from "./pages/PrintPaySlip";
 import LoginForm from "./components/LoginForm";
+import AttendancePage from "./pages/Attendance.jsx/AttendancePage";
 
 const App = () => {
   return (
@@ -40,7 +40,7 @@ const App = () => {
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/employees" element={<Employees />} />
-          <Route path="/attendance" element={<Attendance />} />
+          <Route path="/attendance" element={<AttendancePage />} />
           <Route path="/leave" element={<Leave />} />
           <Route path="/payslips" element={<PaySlips />} />
           <Route path="/settings" element={<Settings />} />

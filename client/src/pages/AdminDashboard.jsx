@@ -1,7 +1,6 @@
 import Chart from "react-apexcharts";
 
 const AdminDashboard = ({ data }) => {
-  console.log(data);
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -63,7 +62,7 @@ const AdminDashboard = ({ data }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 p-4 md:p-8">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-100 p-4 md:p-8">
 
       {/* ================= HEADER ================= */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
@@ -185,7 +184,7 @@ export default AdminDashboard;
 const StatCard = ({ title, value, color }) => {
   return (
     <div
-      className={`p-6 rounded-2xl text-white bg-gradient-to-r ${color}
+      className={`p-6 rounded-2xl text-white bg-linear-to-r ${color}
       shadow-lg hover:scale-105 hover:shadow-2xl transition duration-300 cursor-pointer`}
     >
       <p className="text-sm opacity-80">{title}</p>

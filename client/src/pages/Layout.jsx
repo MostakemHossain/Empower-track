@@ -14,7 +14,7 @@ const Layout = () => {
   const role = user?.role.toLowerCase();
 
   return (
-    <div className="flex h-screen w-full bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
+    <div className="flex h-screen w-full bg-linear-to-br from-slate-50 via-white to-indigo-50/30">
       {/* Sidebar */}
       <Sidebar role={role} />
 
