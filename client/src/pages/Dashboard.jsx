@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import AdminDashboard from "./AdminDashboard";
 import EmployeeDashboard from "./EmployeeDashboard";
 import api from "../api/axios";
 import toast from "react-hot-toast";
 import Loading from "../components/Loading";
+import AdminDashboard from "./admin/AdminDashboard";
+
 
 const Dashboard = () => {
   const [data, setData] = useState(null);

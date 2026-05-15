@@ -1,9 +1,8 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
-import api from "../api/axios";
-import { DEPARTMENTS } from "../assets/assets";
+import api from "../../../api/axios";
+import { DEPARTMENTS } from "../../../assets/assets";
 
-/* ================= REUSABLE INPUT COMPONENT ================= */
 const InputField = ({ label, name, type = "text", value, onChange, required, error, placeholder }) => {
   return (
     <div className="w-full">
@@ -17,7 +16,6 @@ const InputField = ({ label, name, type = "text", value, onChange, required, err
         onChange={onChange}
         placeholder={placeholder}
         autoComplete="off"
-        // Prevent Enter key from submitting the form early
         onKeyDown={(e) => e.key === 'Enter' && e.preventDefault()}
         className={`w-full px-4 py-2.5 rounded-xl border transition-all duration-200 outline-none text-sm ${
           error 
@@ -32,7 +30,7 @@ const InputField = ({ label, name, type = "text", value, onChange, required, err
   );
 };
 
-const AddEmployeeModal = ({ isOpen, onClose, onAdd }) => {
+const AddEmployeeModal = ({ isOpen, onClose, onAdd,fetchEmployees }) => {
   const [step, setStep] = useState(1);
   const [preview, setPreview] = useState(null);
   const [errors, setErrors] = useState({});
@@ -91,7 +89,7 @@ const AddEmployeeModal = ({ isOpen, onClose, onAdd }) => {
   };
 
   const nextStep = (e) => {
-    e.preventDefault(); // Stop any form submission
+    e.preventDefault(); 
     if (validateStep(1)) setStep(2);
   };
 
@@ -100,10 +98,9 @@ const AddEmployeeModal = ({ isOpen, onClose, onAdd }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // 1. Strict Step Check: prevent API call if user is on step 1
+
     if (step !== 2) return; 
 
-    // 2. Final Validation
     if (!validateStep(2)) return;
 
     try {
@@ -124,8 +121,9 @@ const AddEmployeeModal = ({ isOpen, onClose, onAdd }) => {
 
       if (res.data.success) {
         toast.success("Employee onboarded successfully!");
+        fetchEmployees();
         onAdd(res.data.data);
-        handleClose(); // Reset and close
+        handleClose(); 
       }
     } catch (err) {
       toast.error(err?.response?.data?.message || "Failed to create employee");
@@ -138,13 +136,13 @@ const AddEmployeeModal = ({ isOpen, onClose, onAdd }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" onClick={handleClose} />
 
-      <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[550px]">
+      <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-137.5">
         
         {/* SIDEBAR */}
         <div className="w-full md:w-72 bg-slate-50 border-r border-slate-100 p-8 flex flex-col">
           <div className="mb-10">
             <h3 className="text-lg font-bold text-slate-800">New Hire</h3>
-            <p className="text-xs text-slate-500 uppercase tracking-widest font-bold text-indigo-600">EmpowerTrack</p>
+            <p className="text-xs text-slate-500 uppercase tracking-widest font-bold">EmpowerTrack</p>
           </div>
 
           <div className="space-y-8 relative">

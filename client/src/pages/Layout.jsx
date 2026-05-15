@@ -16,7 +16,7 @@ const Layout = () => {
   return (
     <div className="flex h-screen w-full bg-linear-to-br from-slate-50 via-white to-indigo-50/30">
       {/* Sidebar */}
-      <Sidebar role={role} />
+    <Sidebar role={role} />
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto w-full">

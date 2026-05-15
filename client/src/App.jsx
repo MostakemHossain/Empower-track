@@ -6,11 +6,11 @@ import Layout from "./pages/Layout";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
 import PaySlips from "./pages/PaySlips";
-import Leave from "./pages/Leave";
-import Employees from "./pages/Employees";
 import PrintPaySlip from "./pages/PrintPaySlip";
 import LoginForm from "./components/LoginForm";
-import AttendancePage from "./pages/Attendance.jsx/AttendancePage";
+import AttendancePage from "./pages/Attendance/AttendancePage";
+import EmployeesPage from "./pages/Employees/EmployeesPage";
+import LeavePage from "./pages/Leave/LeavePage";
 
 const App = () => {
   return (
@@ -39,9 +39,9 @@ const App = () => {
 
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/employees" element={<Employees />} />
+          <Route path="/employees" element={<EmployeesPage />} />
           <Route path="/attendance" element={<AttendancePage />} />
-          <Route path="/leave" element={<Leave />} />
+          <Route path="/leave" element={<LeavePage />} />
           <Route path="/payslips" element={<PaySlips />} />
           <Route path="/settings" element={<Settings />} />
         </Route>

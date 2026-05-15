@@ -33,9 +33,7 @@ const getDashboard = async (req) => {
     // Today Attendance Count
     const todayAttendance = await Attendance.countDocuments({
       date: { $gte: todayStart, $lte: todayEnd },
-      status: "PRESENT",
     });
-
     // Pending Leaves
     const pendingLeaves = await Leave.countDocuments({
       status: "PENDING",
@@ -71,7 +69,7 @@ const getDashboard = async (req) => {
     // RECENT ACTIVITIES
     // =========================================================
     const recentAttendance = await Attendance.find({
-      status: "PRESENT",
+      
     })
       .sort({ createdAt: -1 })
       .limit(5)
