@@ -3,7 +3,7 @@ import { Toaster } from "react-hot-toast";
 import { Routes, Route, Navigate } from "react-router-dom";
 import LoginLanding from "./pages/LoginLanding";
 import Layout from "./pages/Layout";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/dashboard/Dashboard";
 import Settings from "./pages/Settings";
 import PaySlips from "./pages/PaySlips";
 import PrintPaySlip from "./pages/PrintPaySlip";

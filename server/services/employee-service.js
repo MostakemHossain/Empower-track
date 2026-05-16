@@ -16,10 +16,11 @@ const createEmployee = async (req) => {
     baseSalary,
     allowances,
     deductions,
-    dateOfBirth,
+    dob,
     joiningDate,
     address,
     bio,
+    employmentStatus
   } = req.body;
 
   // 🔹 1. Generate Employee ID
@@ -68,10 +69,11 @@ const createEmployee = async (req) => {
     baseSalary,
     allowances,
     deductions,
-    dateOfBirth,
+    dateOfBirth : dob,
     joiningDate,
     address,
     bio,
+    employmentStatus,
     photo: photoUrl,
   });
 

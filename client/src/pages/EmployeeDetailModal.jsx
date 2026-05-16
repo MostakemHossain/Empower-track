@@ -1,10 +1,8 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState, useRef } from "react";
 import toast from "react-hot-toast";
 import api from "../api/axios";
 import { DEPARTMENTS } from "../assets/assets";
 
-/* ================= REUSABLE INPUT COMPONENT ================= */
 const DetailField = ({
   label,
   name,
@@ -122,7 +120,7 @@ const EmployeeDetailModal = ({ isOpen, onClose, employee, onSave }) => {
       const formData = new FormData();
 
       // Separate the photo and user object from the form data
-      const { photo, user, ...textData } = form;
+      const { photo, ...textData } = form;
 
       // Match Postman structure: key 'data' contains the JSON string
       formData.append("data", JSON.stringify(textData));
@@ -160,7 +158,7 @@ const EmployeeDetailModal = ({ isOpen, onClose, employee, onSave }) => {
         onClick={onClose}
       />
 
-      <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[550px]">
+      <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-137.5">
         {/* SIDEBAR NAVIGATION */}
         <div className="w-full md:w-72 bg-slate-50 border-r border-slate-100 p-8 flex flex-col">
           <div className="mb-10 flex flex-col items-center md:items-start group">
@@ -328,7 +326,7 @@ const EmployeeDetailModal = ({ isOpen, onClose, employee, onSave }) => {
                     value={form.bio}
                     onChange={handleChange}
                     disabled={mode === "view"}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none text-sm min-h-[100px] bg-slate-50/30 disabled:bg-slate-50 disabled:border-transparent transition-all"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none text-sm min-h-25 bg-slate-50/30 disabled:bg-slate-50 disabled:border-transparent transition-all"
                   />
                 </div>
               </div>

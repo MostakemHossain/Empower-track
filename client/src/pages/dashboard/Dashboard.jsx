@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import EmployeeDashboard from "./EmployeeDashboard";
-import api from "../api/axios";
+import api from "../../api/axios";
 import toast from "react-hot-toast";
-import Loading from "../components/Loading";
+import Loading from "../../components/Loading";
 import AdminDashboard from "./admin/AdminDashboard";
+import EmployeeDashboard from "./employee/EmployeeDashboard";
 
 
 const Dashboard = () => {

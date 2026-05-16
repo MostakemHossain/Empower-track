@@ -4,47 +4,32 @@ import Attendance from "../models/attendence-modal.js";
 import AppError from "../errors/app-error.js";
 import httpStatus from "http-status";
 import Payslip from "../models/payslip-modal.js";
+import { DEPARTMENTS } from "../constant/index.js";
 
 const getDashboard = async (req) => {
   const userId = req?.user?.id;
   const role = req?.user?.role;
 
-  // =========================================================
-  // ADMIN DASHBOARD
-  // =========================================================
   if (role === "ADMIN") {
-    // Total Employees
-    const totalEmployees = await Employee.countDocuments({
-      isDeleted: false,
-    });
+    const totalEmployees = await Employee.countDocuments({ isDeleted: false });
+    
+    const totalDepartments = DEPARTMENTS?.length
 
-    // Total Departments
-    const totalDepartments = await Employee.distinct(
-      "department"
-    ).then((res) => res.length);
-
-    // Today Date Range
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
-
     const todayEnd = new Date();
     todayEnd.setHours(23, 59, 59, 999);
 
-    // Today Attendance Count
     const todayAttendance = await Attendance.countDocuments({
       date: { $gte: todayStart, $lte: todayEnd },
     });
-    // Pending Leaves
+
     const pendingLeaves = await Leave.countDocuments({
       status: "PENDING",
       isDeleted: false,
     });
 
-    // =========================================================
-    // LAST 7 DAYS ATTENDANCE OVERVIEW
-    // =========================================================
     const last7Days = [];
-
     for (let i = 6; i >= 0; i--) {
       const start = new Date();
       start.setDate(start.getDate() - i);
@@ -61,40 +46,25 @@ const getDashboard = async (req) => {
 
       last7Days.push({
         date: start,
-        workingHours: attendanceCount,
+        workingHours: attendanceCount, 
       });
     }
 
-    // =========================================================
-    // RECENT ACTIVITIES
-    // =========================================================
-    const recentAttendance = await Attendance.find({
-      
-    })
+    const recentAttendance = await Attendance.find({})
       .sort({ createdAt: -1 })
       .limit(5)
       .select("date status workingHours");
 
     return {
       role: "ADMIN",
-
-      // cards
       totalEmployees,
       totalDepartments,
       todayAttendance,
       pendingLeaves,
-
-      // chart
       attendanceOverview: last7Days,
-
-      // activity
       recentAttendance,
     };
   }
-
-  // =========================================================
-  // EMPLOYEE DASHBOARD
-  // =========================================================
   else if (role === "EMPLOYEE") {
     const employee = await Employee.findOne({ user: userId });
 
@@ -111,47 +81,58 @@ const getDashboard = async (req) => {
     endOfMonth.setDate(0);
     endOfMonth.setHours(23, 59, 59, 999);
 
-    // Current Month Attendance
     const currentMonthAttendance = await Attendance.countDocuments({
       employee: employee._id,
       status: "PRESENT",
-      date: {
-        $gte: startOfMonth,
-        $lte: endOfMonth,
-      },
+      date: { $gte: startOfMonth, $lte: endOfMonth },
     });
 
-    // Pending Leaves
     const pendingLeaves = await Leave.countDocuments({
       employee: employee._id,
       status: "PENDING",
-      isDeleted: false,
     });
 
-    // Total Leaves
     const totalLeaves = await Leave.countDocuments({
       employee: employee._id,
       isDeleted: false,
     });
 
-    // Latest Payslip
     const latestPayslip = await Payslip.findOne({
       employee: employee._id,
     }).sort({ createdAt: -1 });
 
+    const attendanceOverview = [];
+    for (let i = 6; i >= 0; i--) {
+      const start = new Date();
+      start.setDate(start.getDate() - i);
+      start.setHours(0, 0, 0, 0);
+
+      const end = new Date();
+      end.setDate(end.getDate() - i);
+      end.setHours(23, 59, 59, 999);
+      const dayRecord = await Attendance.findOne({
+        employee: employee._id,
+        date: { $gte: start, $lte: end },
+      });
+
+      attendanceOverview.push({
+        date: start,
+        workingHours: dayRecord && dayRecord.status === "PRESENT" ? dayRecord.workingHours : 0,
+        status: dayRecord ? dayRecord.status : "ABSENT"
+      });
+    }
+
     return {
       role: "EMPLOYEE",
-
       currentMonthAttendance,
       pendingLeaves,
       totalLeaves,
-
+      attendanceOverview,
       latestPayslip: latestPayslip
         ? {
             netSalary: latestPayslip.netSalary,
           }
         : null,
-
       employee: {
         firstName: employee.firstName,
         lastName: employee.lastName,
@@ -161,9 +142,6 @@ const getDashboard = async (req) => {
     };
   }
 
-  // =========================================================
-  // INVALID ROLE
-  // =========================================================
   else {
     throw new AppError(httpStatus.BAD_REQUEST, "Invalid role");
   }
